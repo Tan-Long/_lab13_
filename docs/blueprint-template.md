@@ -4,7 +4,7 @@
 
 ## 1. Team Metadata
 - [GROUP_NAME]: Solo-2A202600168
-- [REPO_URL]: https://github.com/Lab13-Observability
+- [REPO_URL]: https://github.com/Tan-Long/_lab13_
 - [MEMBERS]:
   - Member A: Nguyen Huu Tan Long (2A202600168) | Role: Logging & PII
 
