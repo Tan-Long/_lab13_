@@ -1,19 +1,42 @@
 alerts:
   - name: high_latency_p95
     severity: P2
-    condition: latency_p95_ms > 5000 for 30m
+    condition: latency_p95_ms > 3000 for 10m
     type: symptom-based
     owner: team-oncall
+    notify: slack#oncall-alerts
     runbook: docs/alerts.md#1-high-latency-p95
+    note: Tightened from 5000ms to match SLO objective of 3000ms
+
   - name: high_error_rate
     severity: P1
     condition: error_rate_pct > 5 for 5m
     type: symptom-based
     owner: team-oncall
+    notify: pagerduty
     runbook: docs/alerts.md#2-high-error-rate
+
   - name: cost_budget_spike
     severity: P2
     condition: hourly_cost_usd > 2x_baseline for 15m
     type: symptom-based
     owner: finops-owner
+    notify: slack#finops
     runbook: docs/alerts.md#3-cost-budget-spike
+
+  - name: rag_slow_detected
+    severity: P2
+    condition: rag_span_p95_ms > 1000 for 5m
+    type: cause-based
+    owner: team-oncall
+    notify: slack#oncall-alerts
+    runbook: docs/alerts.md#1-high-latency-p95
+    note: Early warning before latency SLO is breached; catches rag_slow incident
+
+  - name: quality_degradation
+    severity: P3
+    condition: quality_score_avg < 0.6 for 30m
+    type: symptom-based
+    owner: team-oncall
+    notify: slack#ml-quality
+    runbook: docs/alerts.md#2-high-error-rate

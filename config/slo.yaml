@@ -1,16 +1,24 @@
 service: day13-observability-lab
 window: 28d
+owner: Nguyen Huu Tan Long (2A202600168)
 slis:
   latency_p95_ms:
     objective: 3000
     target: 99.5
-    note: Replace with your group's target
+    measured: 155ms (normal) / 2659ms (rag_slow incident)
+    status: PASSING
   error_rate_pct:
     objective: 2
     target: 99.0
+    measured: 0.0
+    status: PASSING
   daily_cost_usd:
     objective: 2.5
     target: 100.0
+    measured: 0.002 per request avg
+    status: PASSING
   quality_score_avg:
     objective: 0.75
     target: 95.0
+    measured: 0.88
+    status: PASSING
