@@ -35,14 +35,27 @@ class LabAgent:
         latency_ms = int((time.perf_counter() - started) * 1000)
         cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens)
 
+        input_cost = round((response.usage.input_tokens / 1_000_000) * 3, 6)
+        output_cost = round((response.usage.output_tokens / 1_000_000) * 15, 6)
+
         langfuse_context.update_current_trace(
             user_id=hash_user_id(user_id),
             session_id=session_id,
             tags=["lab", feature, self.model],
         )
-        langfuse_context.update_current_observation(
+        langfuse_context.update_current_generation(
+            model=self.model,
             metadata={"doc_count": len(docs), "query_preview": summarize_text(message)},
-            usage_details={"input": response.usage.input_tokens, "output": response.usage.output_tokens},
+            usage_details={
+                "input": response.usage.input_tokens,
+                "output": response.usage.output_tokens,
+                "total": response.usage.input_tokens + response.usage.output_tokens,
+            },
+            cost_details={
+                "input": input_cost,
+                "output": output_cost,
+                "total": cost_usd,
+            },
         )
 
         metrics.record_request(

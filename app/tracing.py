@@ -4,8 +4,14 @@ import os
 from typing import Any
 
 try:
-    from langfuse.decorators import observe, langfuse_context
+    from langfuse import get_client, observe
+
+    _langfuse_client = get_client()
+    langfuse_context = _langfuse_client
+
 except Exception:  # pragma: no cover
+    _langfuse_client = None  # type: ignore[assignment]
+
     def observe(*args: Any, **kwargs: Any):
         def decorator(func):
             return func
@@ -15,10 +21,18 @@ except Exception:  # pragma: no cover
         def update_current_trace(self, **kwargs: Any) -> None:
             return None
 
-        def update_current_observation(self, **kwargs: Any) -> None:
+        def update_current_generation(self, **kwargs: Any) -> None:
             return None
 
-    langfuse_context = _DummyContext()
+        def flush(self) -> None:
+            return None
+
+    langfuse_context = _DummyContext()  # type: ignore[assignment]
+
+
+def flush_traces() -> None:
+    if _langfuse_client is not None:
+        _langfuse_client.flush()
 
 
 def tracing_enabled() -> bool:
